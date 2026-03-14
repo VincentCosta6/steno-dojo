@@ -1,0 +1,220 @@
+{
+  "id": "ecosteno",
+  "name": "Ecosteno",
+  "manufacturer": "Nolltronics",
+  "description": "Compact ergonomic steno keyboard with 23 keys in a split layout.",
+  "url": "https://nolltronics.com",
+  "gridCols": 12,
+  "gridRows": 3,
+  "rowHeights": ["58px", "58px", "52px"],
+  "keys": [
+    {
+      "id": "num",
+      "stenoKey": "#",
+      "label": "#",
+      "col": 0,
+      "row": 0,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "T",
+      "stenoKey": "T-",
+      "label": "T",
+      "col": 1,
+      "row": 0,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "P",
+      "stenoKey": "P-",
+      "label": "P",
+      "col": 2,
+      "row": 0,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "H",
+      "stenoKey": "H-",
+      "label": "H",
+      "col": 3,
+      "row": 0,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "star",
+      "stenoKey": "*",
+      "label": "*",
+      "col": 4,
+      "row": 0,
+      "colSpan": 3,
+      "rowSpan": 2,
+      "note": "Large oval center key spanning 3 columns and 2 rows"
+    },
+    {
+      "id": "F",
+      "stenoKey": "-F",
+      "label": "F",
+      "col": 7,
+      "row": 0,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "PF",
+      "stenoKey": "-P",
+      "label": "P",
+      "col": 8,
+      "row": 0,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "LF",
+      "stenoKey": "-L",
+      "label": "L",
+      "col": 9,
+      "row": 0,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "TF",
+      "stenoKey": "-T",
+      "label": "T",
+      "col": 10,
+      "row": 0,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "DF",
+      "stenoKey": "-D",
+      "label": "D",
+      "col": 11,
+      "row": 0,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "S",
+      "stenoKey": "S-",
+      "label": "S",
+      "col": 0,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "K",
+      "stenoKey": "K-",
+      "label": "K",
+      "col": 1,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "W",
+      "stenoKey": "W-",
+      "label": "W",
+      "col": 2,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "R",
+      "stenoKey": "R-",
+      "label": "R",
+      "col": 3,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "RF",
+      "stenoKey": "-R",
+      "label": "R",
+      "col": 7,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "BF",
+      "stenoKey": "-B",
+      "label": "B",
+      "col": 8,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "GF",
+      "stenoKey": "-G",
+      "label": "G",
+      "col": 9,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "SF",
+      "stenoKey": "-S",
+      "label": "S",
+      "col": 10,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "ZF",
+      "stenoKey": "-Z",
+      "label": "Z",
+      "col": 11,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "A",
+      "stenoKey": "A-",
+      "label": "A",
+      "col": 2,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "O",
+      "stenoKey": "O-",
+      "label": "O",
+      "col": 3,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "E",
+      "stenoKey": "-E",
+      "label": "E",
+      "col": 7,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "U",
+      "stenoKey": "-U",
+      "label": "U",
+      "col": 8,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1
+    }
+  ]
+}

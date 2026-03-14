@@ -1,0 +1,240 @@
+{
+  "id": "geminipr",
+  "name": "Gemini PR",
+  "manufacturer": "Neutrino Group",
+  "description": "The Gemini PR is a professional steno keyboard with traditional double-S layout.",
+  "url": "https://www.neutrino.group/",
+  "gridCols": 15,
+  "gridRows": 4,
+  "keys": [
+    {
+      "id": "num",
+      "stenoKey": "#",
+      "label": "#",
+      "col": 0,
+      "row": 0,
+      "colSpan": 15,
+      "rowSpan": 1
+    },
+    {
+      "id": "SU",
+      "stenoKey": "S-",
+      "label": "S",
+      "col": 0,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "note": "Upper S key"
+    },
+    {
+      "id": "SL",
+      "stenoKey": "S-",
+      "label": "S",
+      "col": 0,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "note": "Lower S key (same steno key as upper)"
+    },
+    {
+      "id": "T",
+      "stenoKey": "T-",
+      "label": "T",
+      "col": 1,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "K",
+      "stenoKey": "K-",
+      "label": "K",
+      "col": 1,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "P",
+      "stenoKey": "P-",
+      "label": "P",
+      "col": 2,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "W",
+      "stenoKey": "W-",
+      "label": "W",
+      "col": 2,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "H",
+      "stenoKey": "H-",
+      "label": "H",
+      "col": 3,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "R",
+      "stenoKey": "R-",
+      "label": "R",
+      "col": 3,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "A",
+      "stenoKey": "A-",
+      "label": "A",
+      "col": 4,
+      "row": 3,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "O",
+      "stenoKey": "O-",
+      "label": "O",
+      "col": 5,
+      "row": 3,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "starU",
+      "stenoKey": "*",
+      "label": "*",
+      "col": 6,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "note": "Upper star"
+    },
+    {
+      "id": "starL",
+      "stenoKey": "*",
+      "label": "*",
+      "col": 6,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "note": "Lower star"
+    },
+    {
+      "id": "E",
+      "stenoKey": "-E",
+      "label": "E",
+      "col": 7,
+      "row": 3,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "U",
+      "stenoKey": "-U",
+      "label": "U",
+      "col": 8,
+      "row": 3,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "F",
+      "stenoKey": "-F",
+      "label": "F",
+      "col": 9,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "RF",
+      "stenoKey": "-R",
+      "label": "R",
+      "col": 9,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "PF",
+      "stenoKey": "-P",
+      "label": "P",
+      "col": 10,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "BF",
+      "stenoKey": "-B",
+      "label": "B",
+      "col": 10,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "LF",
+      "stenoKey": "-L",
+      "label": "L",
+      "col": 11,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "GF",
+      "stenoKey": "-G",
+      "label": "G",
+      "col": 11,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "TF",
+      "stenoKey": "-T",
+      "label": "T",
+      "col": 12,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "SF",
+      "stenoKey": "-S",
+      "label": "S",
+      "col": 12,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "DF",
+      "stenoKey": "-D",
+      "label": "D",
+      "col": 13,
+      "row": 1,
+      "colSpan": 1,
+      "rowSpan": 1
+    },
+    {
+      "id": "ZF",
+      "stenoKey": "-Z",
+      "label": "Z",
+      "col": 13,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1
+    }
+  ]
+}
