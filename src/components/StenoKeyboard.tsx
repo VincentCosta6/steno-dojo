@@ -63,11 +63,7 @@ function Key({ def, state }: KeyProps) {
         KEY_STATE_CLASSES[state],
       ].join(" ")}
     >
-      {isNumberBar ? (
-        <span className="opacity-60"># # # # # # # # # # #</span>
-      ) : (
-        <span>{def.label}</span>
-      )}
+      <span className={def.stenoKey === "#" ? "opacity-60" : ""}>{def.label}</span>
 
       {/* Subtle glow animation for hint keys */}
       {state === "hint" && (

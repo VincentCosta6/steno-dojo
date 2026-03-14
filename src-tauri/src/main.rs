@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    steno_racer_lib::run()
+    steno_dojo_lib::run()
 }

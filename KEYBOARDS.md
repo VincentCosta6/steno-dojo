@@ -1,6 +1,6 @@
 # Adding Custom Keyboards
 
-Steno Racer supports any keyboard layout that uses standard steno keys.
+Steno Dojo supports any keyboard layout that uses standard steno keys.
 To add your own keyboard, create a JSON file in `src/keyboards/` and import it
 in `src/keyboards/index.ts`.
 
