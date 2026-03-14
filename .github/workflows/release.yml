@@ -15,12 +15,16 @@ jobs:
         include:
           - platform: macos-latest
             args: "--target aarch64-apple-darwin"
+            artifact_name: "Steno-Dojo-Mac-Apple-Silicon.dmg"
           - platform: macos-latest
             args: "--target x86_64-apple-darwin"
+            artifact_name: "Steno-Dojo-Mac-Intel.dmg"
           - platform: ubuntu-22.04
             args: ""
+            artifact_name: "Steno-Dojo-Linux.deb"
           - platform: windows-latest
             args: ""
+            artifact_name: "Steno-Dojo-Windows-Setup.exe"
 
     runs-on: ${{ matrix.platform }}
 
@@ -51,7 +55,7 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
-      - name: Build and release
+      - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -63,3 +67,28 @@ jobs:
           releaseDraft: true
           prerelease: ${{ contains(github.ref_name, '-') }}
           args: ${{ matrix.args }}
+          
+      - name: Rename Artifacts
+        shell: bash
+        run: |
+          # Tauri action builds into src-tauri/target/release/bundle/
+          
+          mkdir -p release-assets
+          
+          if [ "${{ matrix.platform }}" == "macos-latest" ]; then
+             cp src-tauri/target/release/bundle/dmg/*.dmg "release-assets/${{ matrix.artifact_name }}"
+          elif [ "${{ matrix.platform }}" == "windows-latest" ]; then
+             cp src-tauri/target/release/bundle/nsis/*.exe "release-assets/${{ matrix.artifact_name }}"
+          elif [ "${{ matrix.platform }}" == "ubuntu-22.04" ]; then
+             cp src-tauri/target/release/bundle/deb/*.deb "release-assets/${{ matrix.artifact_name }}"
+          fi
+          
+      - name: Upload Renamed Assets to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release-assets/*
+          tag_name: ${{ github.ref_name }}
+          draft: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
