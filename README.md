@@ -34,7 +34,7 @@ Pre-built installers for macOS, Windows, and Linux are available on the [Release
 
 ### Running the app
 
-- [Plover](https://www.openstenoproject.org/plover/) with the **plover-websocket-server** plugin installed (the app can install this for you)
+- [Plover](https://www.openstenoproject.org/plover/) with the **plover-steno-dojo** plugin installed
 - A steno machine, or Plover running in keyboard emulation mode
 
 ### Building from source
@@ -76,10 +76,7 @@ Outputs platform-native installers to `src-tauri/target/release/bundle/`.
 ## Plover Setup
 
 1. Install [Plover](https://www.openstenoproject.org/plover/)
-2. Install the `plover-websocket-server` plugin — Steno Dojo has a built-in installer, or run:
-   ```
-   plover -s plover_plugins install plover-websocket-server
-   ```
+2. Open Plover's Plugin Manager and install the `plover-steno-dojo` plugin.
 3. Restart Plover; the WebSocket server starts automatically on `ws://localhost:8086/`
 4. Open Steno Dojo — it will connect automatically
 
@@ -120,7 +117,6 @@ src/
 src-tauri/
   src/              Rust command handlers
   tauri.conf.json   Tauri configuration
-plover-plugin/      WebSocket server Plover plugin (bundled with the app)
 ```
 
 ---

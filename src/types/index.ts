@@ -38,24 +38,49 @@ export type RTFStroke = string;
 /** Parsed active key names from a stroke */
 export type StenoKeys = string[];
 
-export interface PloverMessage {
-  type: "hello" | "stroked" | "translated" | "machine_state_changed" | "output_state_changed" | string;
-  /** Plugin version string, present in "hello" messages */
-  version?: string;
-  /** RTF/CRE stroke string */
-  stroke?: string;
-  /** Some plugins use this field name */
+export interface PloverHelloMessage {
+  type: "hello";
+  version: string;
+}
+
+export interface PloverDictionariesMessage {
+  type: "dictionaries";
+  dictionaries: string[];
+}
+
+export interface PloverStrokedMessage {
+  type: "stroked" | "stroke";
+  stroke?: string | Record<string, string>;
   steno?: string;
-  /** Translation output text */
   translation?: string;
   text?: string;
-  /** Machine connection state (from machine_state_changed) */
-  state?: "connected" | "disconnected" | "no connection" | string;
-  /** plover-steno-dojo sends the machine name as machine_type */
+}
+
+export interface PloverTranslatedMessage {
+  type: "translated";
+  translation?: string;
+  text?: string;
+}
+
+export interface PloverMachineStateMessage {
+  type: "machine_state_changed";
+  state: "connected" | "disconnected" | "no connection" | string;
   machine_type?: string;
-  /** Older plugin versions used machine */
   machine?: string;
 }
+
+export interface PloverOutputStateMessage {
+  type: "output_state_changed";
+}
+
+export type PloverDojoPluginMessage =
+  | PloverHelloMessage
+  | PloverDictionariesMessage
+  | PloverStrokedMessage
+  | PloverTranslatedMessage
+  | PloverMachineStateMessage
+  | PloverOutputStateMessage
+  | { type: string; [key: string]: unknown };
 
 export type PloverStatus = "disconnected" | "connecting" | "connected" | "error";
 

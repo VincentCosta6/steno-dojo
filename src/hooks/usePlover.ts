@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import type { PloverStatus, PloverMessage } from "../types";
+import type { PloverStatus, PloverDojoPluginMessage, PloverStrokedMessage, PloverTranslatedMessage } from "../types";
 import { parseStroke } from "./useSteno";
 
 export interface PloverState {
@@ -18,6 +18,8 @@ export interface PloverState {
   strokeCount: number;
   /** Plugin version from the "hello" handshake, or null if not yet received */
   pluginVersion: string | null;
+  /** Active dictionaries loaded in Plover */
+  dictionaries: string[];
 }
 
 export interface UsePloverReturn extends PloverState {
@@ -42,13 +44,13 @@ function normalizeTranslation(raw: string): string {
  * Extract stroke string from various Plover WebSocket message formats.
  * Different plugins send the stroke in different fields.
  */
-function extractStroke(msg: PloverMessage): string | null {
+function extractStroke(msg: PloverStrokedMessage | PloverTranslatedMessage): string | null {
   // Format 1: {"type": "stroked", "stroke": "TEFT"}
-  if (typeof msg.stroke === "string") return msg.stroke;
+  if ("stroke" in msg && typeof msg.stroke === "string") return msg.stroke;
   // Format 2: {"type": "stroke", "steno": "TEFT"}
-  if (typeof msg.steno === "string") return msg.steno;
+  if ("steno" in msg && typeof msg.steno === "string") return msg.steno;
   // Format 3: stroke as an object with rtfcre property
-  if (typeof msg.stroke === "object" && msg.stroke !== null) {
+  if ("stroke" in msg && typeof msg.stroke === "object" && msg.stroke !== null) {
     const s = msg.stroke as Record<string, unknown>;
     if (typeof s.rtfcre === "string") return s.rtfcre;
   }
@@ -58,12 +60,12 @@ function extractStroke(msg: PloverMessage): string | null {
 /**
  * Extract translation text from a Plover WebSocket message.
  */
-function extractTranslation(msg: PloverMessage): string | null {
-  if (typeof msg.translation === "string")
+function extractTranslation(msg: PloverStrokedMessage | PloverTranslatedMessage): string | null {
+  if ("translation" in msg && typeof msg.translation === "string")
     return normalizeTranslation(msg.translation);
-  if (typeof msg.text === "string") return normalizeTranslation(msg.text);
+  if ("text" in msg && typeof msg.text === "string") return normalizeTranslation(msg.text);
   // Some plugins nest translation in an "action" object
-  if (typeof msg.text === "string") return normalizeTranslation(msg.text);
+  if ("text" in msg && typeof msg.text === "string") return normalizeTranslation(msg.text);
   return null;
 }
 
@@ -77,6 +79,7 @@ export function usePlover(initialUrl?: string): UsePloverReturn {
     machineConnected: false,
     strokeCount: 0,
     pluginVersion: null,
+    dictionaries: [],
   });
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -110,19 +113,21 @@ export function usePlover(initialUrl?: string): UsePloverReturn {
 
       ws.onmessage = (event: MessageEvent) => {
         try {
-          const msg: PloverMessage = JSON.parse(event.data as string);
+          const msg = JSON.parse(event.data as string) as PloverDojoPluginMessage;
 
-          if (msg.type === "hello" && typeof msg.version === "string") {
-            setState((prev) => ({ ...prev, pluginVersion: msg.version! }));
+          if (msg.type === "hello") {
+            setState((prev) => ({ ...prev, pluginVersion: msg.version as string }));
+          } else if (msg.type === "dictionaries") {
+            setState((prev) => ({ ...prev, dictionaries: msg.dictionaries as string[] }));
           } else if (
             msg.type === "stroked" ||
             msg.type === "stroke" ||
             msg.type === "translated"
           ) {
-            const strokeStr = extractStroke(msg);
+            const strokeStr = extractStroke(msg as PloverStrokedMessage | PloverTranslatedMessage);
             if (strokeStr) {
               const keys = parseStroke(strokeStr);
-              const translation = extractTranslation(msg) ?? "";
+              const translation = extractTranslation(msg as PloverStrokedMessage | PloverTranslatedMessage) ?? "";
               setState((prev) => ({
                 ...prev,
                 activeKeys: keys,
@@ -132,8 +137,7 @@ export function usePlover(initialUrl?: string): UsePloverReturn {
               }));
             }
           } else if (msg.type === "machine_state_changed") {
-            // plover-steno-dojo uses machine_type; older builds used machine
-            const name = msg.machine_type ?? msg.machine ?? "";
+            const name = (msg.machine_type as string | undefined) ?? (msg.machine as string | undefined) ?? "";
             const connected = msg.state === "connected";
             setState((prev) => ({
               ...prev,

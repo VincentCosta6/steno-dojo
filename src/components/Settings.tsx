@@ -77,7 +77,7 @@ export function Settings({
             <p className="text-xs text-[#445] font-mono mb-3">
               Steno Dojo connects to Plover via WebSocket. Make sure the{" "}
               <span className="text-[#00d4ff]">plover-steno-dojo</span>{" "}
-              plugin is installed and enabled.
+              plugin is installed in Plover and enabled.
             </p>
             <div className="flex gap-2 mb-4">
               <button
@@ -85,13 +85,6 @@ export function Settings({
                 className="text-xs font-mono text-[#445] hover:text-[#00d4ff] transition-colors"
               >
                 Get Plover ↗
-              </button>
-              <span className="text-[#1a1a3a]">·</span>
-              <button
-                onClick={() => openLink("https://github.com/VincentCosta6/plover-steno-dojo")}
-                className="text-xs font-mono text-[#445] hover:text-[#00d4ff] transition-colors"
-              >
-                plover-steno-dojo plugin ↗
               </button>
             </div>
 

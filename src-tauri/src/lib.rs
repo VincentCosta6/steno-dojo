@@ -180,119 +180,6 @@ async fn brew_install_plover(app: tauri::AppHandle) -> Result<(), String> {
     }
 }
 
-// ─── Steno Dojo plugin installer ─────────────────────────────────────────────
-
-fn plugin_path_from_app(app: &tauri::AppHandle) -> String {
-    app.path()
-        .resource_dir()
-        .map(|d| d.join("plover-plugin").to_string_lossy().into_owned())
-        .unwrap_or_default()
-}
-
-/// Find the real CPython interpreter embedded inside Plover.app (macOS).
-/// Plover ships a full Python.framework — we use that Python directly
-/// instead of the PyInstaller launcher (which doesn't forward -m to pip).
-#[cfg(target_os = "macos")]
-fn find_plover_python() -> Option<std::path::PathBuf> {
-    let versions_dir = std::path::Path::new(
-        "/Applications/Plover.app/Contents/Frameworks/Python.framework/Versions",
-    );
-    let mut versions: Vec<_> = std::fs::read_dir(versions_dir)
-        .ok()?
-        .flatten()
-        .filter(|e| e.file_type().map(|t| t.is_dir()).unwrap_or(false))
-        .collect();
-    // Sort descending so we prefer the newest Python version
-    versions.sort_by(|a, b| b.file_name().cmp(&a.file_name()));
-    for entry in &versions {
-        let ver = entry.file_name();
-        let ver_str = ver.to_string_lossy();
-        // Skip the "Current" symlink entry
-        if ver_str == "Current" {
-            continue;
-        }
-        for name in &[
-            format!("python{ver_str}"),
-            "python3".to_string(),
-            "python".to_string(),
-        ] {
-            let py = entry.path().join("bin").join(name);
-            if py.exists() {
-                return Some(py);
-            }
-        }
-    }
-    None
-}
-
-/// Returns the ready-to-run pip install command for the current platform,
-/// using the correct Python interpreter for Plover's environment.
-#[tauri::command]
-fn get_install_command(app: tauri::AppHandle) -> String {
-    let plugin_path = plugin_path_from_app(&app);
-
-    #[cfg(target_os = "macos")]
-    {
-        let python = find_plover_python()
-            .map(|p| p.to_string_lossy().into_owned())
-            .unwrap_or_else(|| {
-                "/Applications/Plover.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3"
-                    .to_string()
-            });
-        format!("{python} -m pip install \"{plugin_path}\"")
-    }
-
-    #[cfg(not(target_os = "macos"))]
-    format!("pip install \"{plugin_path}\"")
-}
-
-/// Opens the platform's default terminal with the pip install command
-/// pre-filled and ready to run.
-#[tauri::command]
-async fn open_terminal_install(app: tauri::AppHandle) -> Result<(), String> {
-    let plugin_path = plugin_path_from_app(&app);
-
-    #[cfg(target_os = "macos")]
-    {
-        let python = find_plover_python()
-            .ok_or("Could not find Python inside Plover.app — is Plover installed in /Applications?")?;
-        let python_str = python.to_string_lossy();
-
-        // Build the shell command, then escape it for embedding in an AppleScript string.
-        // Inside a double-quoted AppleScript string: \ → \\ and " → \"
-        let shell_cmd = format!("{python_str} -m pip install \"{plugin_path}\"");
-        let escaped = shell_cmd.replace('\\', "\\\\").replace('"', "\\\"");
-        let applescript = format!(
-            "tell application \"Terminal\"\n  activate\n  do script \"{escaped}\"\nend tell"
-        );
-
-        tokio::process::Command::new("osascript")
-            .arg("-e")
-            .arg(&applescript)
-            .spawn()
-            .map_err(|e| format!("Could not open Terminal: {e}"))?;
-        Ok(())
-    }
-
-    #[cfg(target_os = "windows")]
-    {
-        // Open a new Command Prompt window with the install command pre-filled.
-        // `& pause` keeps the window open so the user can read the output.
-        let shell_cmd = format!("pip install \"{}\" & pause", plugin_path.replace('"', "\\\""));
-        tokio::process::Command::new("cmd")
-            .args(["/C", "start", "cmd.exe", "/K", &shell_cmd])
-            .spawn()
-            .map_err(|e| format!("Could not open Command Prompt: {e}"))?;
-        Ok(())
-    }
-
-    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
-    {
-        let _ = plugin_path;
-        Err("Automatic terminal launch is not supported on Linux — copy the command and run it manually.".to_string())
-    }
-}
-
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
@@ -307,8 +194,6 @@ pub fn run() {
             check_brew_available,
             check_plover_brew_installed,
             brew_install_plover,
-            get_install_command,
-            open_terminal_install,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

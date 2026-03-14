@@ -49,6 +49,30 @@ export default function App() {
     }
   }, []);
 
+  // Auto-load dictionary when connected if none is set
+  useEffect(() => {
+    if (
+      plover.status === "connected" &&
+      !settings.dictionaryPath &&
+      plover.dictionaries.length > 0
+    ) {
+      // Prefer the first JSON dictionary, fallback to the first available if none.
+      const mainDict =
+        plover.dictionaries.find((d) => d.endsWith(".json")) ||
+        plover.dictionaries[0];
+      if (mainDict) {
+        updateSettings({ dictionaryPath: mainDict });
+        loadDictionary(mainDict).catch(() => {});
+      }
+    }
+  }, [
+    plover.status,
+    plover.dictionaries,
+    settings.dictionaryPath,
+    updateSettings,
+    loadDictionary,
+  ]);
+
   // Show onboarding for first-time users
   if (!settings.onboardingComplete) {
     return (
@@ -86,7 +110,7 @@ export default function App() {
       )}
 
       {/* ── Main Content ─────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
         {mode === "home" && (
           <HomeScreen onMode={setMode} plover={plover} keyboard={keyboard} />
         )}
@@ -161,7 +185,7 @@ function TitleBar({
           <button
             key={m}
             onClick={() => onModeChange(m)}
-            className="px-3 py-1 rounded font-mono text-xs uppercase tracking-wider transition-colors capitalize"
+            className="px-3 py-1 rounded font-mono text-xs uppercase tracking-wider transition-colors"
             style={{
               color: mode === m ? "#d0d8e8" : "#445",
               background: mode === m ? "#1a1a3a" : "transparent",
@@ -233,7 +257,7 @@ function HomeScreen({
   keyboard: KeyboardDefinition;
 }) {
   return (
-    <div className="flex flex-col h-full p-6 gap-6">
+    <div className="flex flex-col min-h-full p-6 gap-6">
       {/* Hero */}
       <div className="text-center space-y-2 pt-4">
         <div className="text-5xl">⛩️</div>
@@ -285,7 +309,7 @@ function HomeScreen({
       </div>
 
       {/* Live keyboard preview */}
-      <div className="flex-1 flex items-end justify-center pb-2">
+      <div className="flex-1 flex items-end justify-center pb-2 min-h-[300px]">
         <div className="w-full max-w-2xl">
           <p className="text-[10px] text-[#334] font-mono uppercase tracking-widest text-center mb-2">
             Live keyboard preview — start stroking

@@ -369,83 +369,33 @@ function StepInstallPlover() {
   );
 }
 
-// ─── Step 2: Install Plugin ───────────────────────────────────────────────────
-
 function StepInstallPlugin() {
-  const [installCmd, setInstallCmd] = useState("Loading…");
-  const [opened, setOpened] = useState(false);
-
-  useEffect(() => {
-    invoke<string>("get_install_command").then(setInstallCmd).catch(() => {});
-  }, []);
-
-  const openTerminal = async () => {
-    try {
-      await invoke("open_terminal_install");
-      setOpened(true);
-    } catch {
-      navigator.clipboard.writeText(installCmd).catch(() => {});
-    }
-  };
-
   return (
     <div className="max-w-lg w-full space-y-5">
       <div className="text-center">
         <div className="text-5xl mb-4">🔌</div>
         <h2 className="text-2xl font-bold font-mono text-[#d0d8e8]">
-          Install the Steno Dojo Plugin
+          Install the Dojo Plugin
         </h2>
         <p className="text-[#556] font-mono text-sm mt-2">
-          A small Plover extension that streams your strokes to Steno Dojo
-          over a local WebSocket. No data leaves your machine.
+          Steno Dojo needs the <strong className="text-[#00d4ff]">plover-steno-dojo</strong> plugin to receive your strokes.
         </p>
       </div>
 
-      {/* Install command card */}
-      <div className="p-4 rounded-xl border border-[#1a1a3a] bg-[#0d0d1e] space-y-3">
-        <p className="text-xs font-mono text-[#445]">Run this in a terminal:</p>
-        <div className="flex items-center gap-2 bg-[#050508] rounded-lg border border-[#1a1a3a] p-3">
-          <code className="flex-1 text-[10px] font-mono text-[#00d4ff] break-all leading-relaxed">
-            {installCmd}
-          </code>
-          <CopyButton text={installCmd} />
-        </div>
-
-        {IS_MAC ? (
-          <button
-            onClick={openTerminal}
-            className="w-full py-2.5 rounded-lg font-mono font-bold text-sm transition-all"
-            style={{ background: "#00d4ff", color: "#080810" }}
-          >
-            {opened ? "Terminal opened ✓" : "Open Terminal & Run →"}
-          </button>
-        ) : (
-          <p className="text-xs font-mono text-[#334] text-center">
-            Copy the command above and run it in your terminal.
-          </p>
-        )}
-      </div>
-
-      {opened && (
-        <div className="flex items-center gap-3 p-3 rounded-xl border border-[#00d4ff33] bg-[#001122]">
-          <span className="text-base">💡</span>
-          <p className="text-xs font-mono text-[#445]">
-            The command is running in Terminal. When it finishes, come back here and continue.
-          </p>
-        </div>
-      )}
-
-      {/* Enable in Plover */}
-      <div className="space-y-3 pt-1">
-        <p className="text-xs font-mono text-[#334] uppercase tracking-widest">
-          Then enable in Plover:
-        </p>
-        <Step number={1} text="Restart Plover after the install finishes" />
+      <div className="space-y-4 pt-2">
+        <Step
+          number={1}
+          text={
+            <>
+              Open Plover and go to <span className="text-[#00d4ff] font-mono">Tools → Plug-ins Manager</span>
+            </>
+          }
+        />
         <Step
           number={2}
           text={
             <>
-              Open <span className="text-[#00d4ff] font-mono">Tools → Plug-ins Manager</span>
+              Scroll down to find <span className="text-[#00d4ff] font-mono">plover-steno-dojo</span>
             </>
           }
         />
@@ -453,15 +403,21 @@ function StepInstallPlugin() {
           number={3}
           text={
             <>
-              Find <span className="text-[#00d4ff] font-mono">steno_dojo</span>, click{" "}
-              <span className="text-[#ffd700]">Enable</span> then{" "}
-              <span className="text-[#ffd700]">Apply</span>
+              Click <span className="text-[#ffd700]">Install</span> and wait for it to finish.
+            </>
+          }
+        />
+        <Step
+          number={4}
+          text={
+            <>
+              Restart Plover. The websocket server will start automatically!
             </>
           }
         />
       </div>
 
-      <div className="p-3 rounded-lg border border-[#ffd70033] bg-[#1a1100]">
+      <div className="p-3 rounded-lg border border-[#ffd70033] bg-[#1a1100] mt-4">
         <p className="text-xs font-mono text-[#ffd700]">
           💡 The plugin listens on{" "}
           <span className="font-semibold">ws://localhost:8086/</span> — no extra configuration needed.
@@ -578,15 +534,14 @@ function StepConnect({
         }}
       >
         <div
-          className={`w-3 h-3 rounded-full flex-shrink-0 ${
-            isConnected
+          className={`w-3 h-3 rounded-full flex-shrink-0 ${isConnected
               ? plover.machineConnected
                 ? "bg-[#00ff88] shadow-[0_0_8px_#00ff88]"
                 : "bg-[#ffd700] animate-pulse"
               : plover.status === "connecting"
                 ? "bg-[#ffd700] animate-pulse"
                 : "bg-[#334]"
-          }`}
+            }`}
         />
         <div className="flex-1">
           <div
@@ -647,29 +602,6 @@ function StepConnect({
 }
 
 // ─── Small helpers ────────────────────────────────────────────────────────────
-
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  const copy = () => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }).catch(() => {});
-  };
-  return (
-    <button
-      onClick={copy}
-      className="flex-shrink-0 px-2 py-1 rounded text-[10px] font-mono transition-colors"
-      style={{
-        color: copied ? "#00ff88" : "#445",
-        background: "#0d0d1e",
-        border: `1px solid ${copied ? "#00ff8844" : "#1a1a3a"}`,
-      }}
-    >
-      {copied ? "Copied!" : "Copy"}
-    </button>
-  );
-}
 
 function Step({ number, text }: { number: number; text: React.ReactNode }) {
   return (

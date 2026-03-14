@@ -3,7 +3,7 @@
  * Bump this when making breaking changes to the WebSocket protocol.
  * Users on older versions will see a blocking update prompt.
  */
-export const MIN_PLUGIN_VERSION = "0.2.0";
+export const MIN_PLUGIN_VERSION = "0.3.0";
 
 /**
  * GitHub releases API endpoint for the plover-steno-dojo plugin.
