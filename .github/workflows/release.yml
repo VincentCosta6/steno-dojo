@@ -57,31 +57,24 @@ jobs:
 
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: "Steno Dojo ${{ github.ref_name }}"
-          releaseBody: |
-            See the [CHANGELOG](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
-          releaseDraft: true
-          prerelease: ${{ contains(github.ref_name, '-') }}
           args: ${{ matrix.args }}
           
       - name: Rename Artifacts
         shell: bash
         run: |
-          # Tauri action builds into src-tauri/target/release/bundle/
-          
           mkdir -p release-assets
           
           if [ "${{ matrix.platform }}" == "macos-latest" ]; then
-             cp src-tauri/target/release/bundle/dmg/*.dmg "release-assets/${{ matrix.artifact_name }}"
+             find src-tauri/target -name "*.dmg" -exec cp "{}" "release-assets/${{ matrix.artifact_name }}" \;
           elif [ "${{ matrix.platform }}" == "windows-latest" ]; then
-             cp src-tauri/target/release/bundle/nsis/*.exe "release-assets/${{ matrix.artifact_name }}"
+             find src-tauri/target -name "*setup*.exe" -exec cp "{}" "release-assets/${{ matrix.artifact_name }}" \;
           elif [ "${{ matrix.platform }}" == "ubuntu-22.04" ]; then
-             cp src-tauri/target/release/bundle/deb/*.deb "release-assets/${{ matrix.artifact_name }}"
+             find src-tauri/target -name "*.deb" -exec cp "{}" "release-assets/${{ matrix.artifact_name }}" \;
           fi
+          
+          echo "Found artifacts:"
+          ls -la release-assets/
           
       - name: Upload Renamed Assets to Release
         uses: softprops/action-gh-release@v1
