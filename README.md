@@ -137,4 +137,4 @@ Pull requests are welcome. For significant changes, open an issue first to discu
 
 ## License
 
-MIT
+[PolyForm Noncommercial 1.0.0](LICENSE) — free to use, modify, and share for non-commercial purposes. Commercial use is not permitted.
