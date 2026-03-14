@@ -16,15 +16,19 @@ jobs:
           - platform: macos-latest
             args: "--target aarch64-apple-darwin"
             artifact_name: "Steno-Dojo-Mac-Apple-Silicon.dmg"
+            updater_suffix: ".app.tar.gz"
           - platform: macos-latest
             args: "--target x86_64-apple-darwin"
             artifact_name: "Steno-Dojo-Mac-Intel.dmg"
+            updater_suffix: ".app.tar.gz"
           - platform: ubuntu-22.04
             args: ""
             artifact_name: "Steno-Dojo-Linux.deb"
+            updater_suffix: ".AppImage.tar.gz"
           - platform: windows-latest
             args: ""
             artifact_name: "Steno-Dojo-Windows-Setup.exe"
+            updater_suffix: ".nsis.zip"
 
     runs-on: ${{ matrix.platform }}
 
@@ -74,6 +78,7 @@ jobs:
         run: |
           mkdir -p release-assets
           
+          # 1. Capture the primary installer
           if [ "${{ matrix.platform }}" == "macos-latest" ]; then
              find src-tauri/target -name "*.dmg" -exec cp "{}" "release-assets/${{ matrix.artifact_name }}" \;
           elif [ "${{ matrix.platform }}" == "windows-latest" ]; then
@@ -81,6 +86,15 @@ jobs:
           elif [ "${{ matrix.platform }}" == "ubuntu-22.04" ]; then
              find src-tauri/target -name "*.deb" -exec cp "{}" "release-assets/${{ matrix.artifact_name }}" \;
           fi
+          
+          # 2. Capture the updater bundle (for silent background updates)
+          # Tauri names these like steno-dojo_0.1.0_x64.app.tar.gz
+          updater_file_name="${{ matrix.artifact_name }}${{ matrix.updater_suffix }}"
+          find src-tauri/target -name "*${{ matrix.updater_suffix }}" -exec cp "{}" "release-assets/$updater_file_name" \;
+          
+          # 3. Capture the signature file (required by Tauri to trust the update)
+          # These are generated as .sig files for the update bundle
+          find src-tauri/target -name "*${{ matrix.updater_suffix }}.sig" -exec cp "{}" "release-assets/$updater_file_name.sig" \;
           
           echo "Found artifacts:"
           ls -la release-assets/
