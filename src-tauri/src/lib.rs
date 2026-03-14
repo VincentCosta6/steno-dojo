@@ -5,8 +5,8 @@ use tauri::{Emitter, Manager};
 /// and return a reverse map: word → [shortest_stroke, ...other_strokes]
 #[tauri::command]
 async fn load_plover_dictionary(path: String) -> Result<HashMap<String, Vec<String>>, String> {
-    let content = std::fs::read_to_string(&path)
-        .map_err(|e| format!("Failed to read dictionary: {e}"))?;
+    let content =
+        std::fs::read_to_string(&path).map_err(|e| format!("Failed to read dictionary: {e}"))?;
 
     let dict: HashMap<String, String> = serde_json::from_str(&content)
         .map_err(|e| format!("Failed to parse dictionary JSON: {e}"))?;
@@ -20,10 +20,7 @@ async fn load_plover_dictionary(path: String) -> Result<HashMap<String, Vec<Stri
         if normalized.is_empty() || normalized.starts_with('{') {
             continue; // Skip meta entries like {.}, {-|}, etc.
         }
-        reverse
-            .entry(normalized)
-            .or_default()
-            .push(stroke.clone());
+        reverse.entry(normalized).or_default().push(stroke.clone());
     }
 
     // Sort each word's stroke list: prefer single-stroke entries, then by length
@@ -45,10 +42,7 @@ async fn load_plover_dictionary(path: String) -> Result<HashMap<String, Vec<Stri
 /// Look up strokes for a specific word from the already-loaded dictionary.
 /// Returns up to 5 stroke options.
 #[tauri::command]
-fn lookup_word(
-    word: String,
-    dictionary: HashMap<String, Vec<String>>,
-) -> Vec<String> {
+fn lookup_word(word: String, dictionary: HashMap<String, Vec<String>>) -> Vec<String> {
     let normalized = word.trim().to_lowercase();
     dictionary
         .get(&normalized)
@@ -65,8 +59,8 @@ async fn list_keyboards(keyboards_dir: String) -> Result<Vec<String>, String> {
     }
 
     let mut keyboards = vec![];
-    let entries = std::fs::read_dir(dir)
-        .map_err(|e| format!("Failed to read keyboards dir: {e}"))?;
+    let entries =
+        std::fs::read_dir(dir).map_err(|e| format!("Failed to read keyboards dir: {e}"))?;
 
     for entry in entries.flatten() {
         let path = entry.path();
@@ -121,7 +115,9 @@ fn check_brew_available() -> bool {
 /// Returns true if the Plover cask is already installed via Homebrew.
 #[tauri::command]
 async fn check_plover_brew_installed() -> bool {
-    let Some(brew) = find_brew() else { return false };
+    let Some(brew) = find_brew() else {
+        return false;
+    };
     std::process::Command::new(brew)
         .args(["list", "--cask", "plover"])
         .output()
@@ -182,6 +178,7 @@ async fn brew_install_plover(app: tauri::AppHandle) -> Result<(), String> {
 
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
