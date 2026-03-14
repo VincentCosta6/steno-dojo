@@ -134,3 +134,14 @@ Pull requests are welcome. For significant changes, open an issue first to discu
 ## License
 
 [PolyForm Noncommercial 1.0.0](LICENSE) — free to use, modify, and share for non-commercial purposes. Commercial use is not permitted.
+
+---
+
+## Troubleshooting
+
+### macOS: "Steno Dojo is damaged and can't be opened"
+If you download the `.dmg` from GitHub Releases, macOS Gatekeeper may flag the app as "damaged" because it is an unsigned open-source application downloaded from the internet.
+
+To fix this and allow the app to run normally, open your Terminal and run the following command to remove the Apple quarantine attribute:
+
+`xattr -rc "/Applications/Steno Dojo.app"`
